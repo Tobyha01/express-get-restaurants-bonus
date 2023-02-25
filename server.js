@@ -47,9 +47,10 @@ app.post("/items", async function(request, response) {
     }
 })
 
-app.get("/restaurants", async function(request, response) {
+app.put("/restaurants/:id", async function(request, response) {
     try{
-        const restaurant = await Restaurant.findAll( {include: Menu/* ,include: [{menu_item}] */ })
+        const restaurant = await Restaurant.findByPk( request.params.id)
+        restaurant.addMenu([1,2,3])
         response.status(200).send({restaurant})
     }
     catch(error){
