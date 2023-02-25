@@ -58,6 +58,53 @@ app.put("/restaurants/:id", async function(request, response) {
     }
 })
 
+app.put("/menus/:id", async function(request, response) {
+    try{
+        const menu = await Menu.findByPk( request.params.id)
+        menu.addItem([1,2,3])
+        response.status(200).send({menu})
+    }
+    catch(error){
+        response.status(500).send({error: error.message})
+    }
+})
+
+app.get("/menus", async function(request, response) {
+    try{
+        const menu = await Menu.findAll({include: Item})
+        response.status(200).send(menu)
+    }
+    catch(error){
+        response.status(500).send({error: error.message})
+    }
+})
+
+app.get("/restaurants", async function(request, response) {
+    try{
+        const restaurant = await Restaurant.findAll(
+            {
+                include: Restaurant,
+                
+                    include: [{
+                                
+                        model: Menu,
+                        include: [{
+                        
+                            model: Item,
+                        
+                            through: { attributes: [] }
+                        }]
+                    }]
+            }
+        )
+      
+        response.status(200).send(restaurant)
+    }
+    catch(error){
+        response.status(500).send({error: error.message})
+    }
+})
+
 app.listen(port, async function() {
     await sequelize.sync()
     console.log(`App listening on port: http://localhost:${port}/restaurants `)
