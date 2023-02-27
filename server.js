@@ -83,8 +83,6 @@ app.get("/restaurants", async function(request, response) {
     try{
         const restaurant = await Restaurant.findAll(
             {
-                include: Restaurant,
-                
                     include: [{
                                 
                         model: Menu,
